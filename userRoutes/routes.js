@@ -49,7 +49,7 @@ router.post("/signup", async (req, res) => {
             subject: "Account activation link",
             html: `<div><p><b>Hi</b> <b>${userData.firstname},</b></p>
             <h3>We have sent a account activation link. please click on below link to activate your account. This link will be expired after 24 hours.</h3>
-            <a href=http://localhost:3000/activate/${getUserId._id}/${token} target=_blank>click me</a></div>`
+            <a href=https://url-backend-aenc.onrender.com/activate/${getUserId._id}/${token} target=_blank>click me</a></div>`
         }
         tranport.sendMail(mailoption, function (error, info) {
             if (error) {
@@ -115,7 +115,7 @@ router.get("/resend/:id", async (req, res) => {
             subject: "Account activation link",
             html: `<div><p><b>Hi</b> <b>${user.firstname},</b></p>
             <h3>We have sent a account activation link. please click on below link to activate your account. This link will be expired after 24 hours.</h3>
-            <a href=http://localhost:3000/activate/${user._id}/${token} target=_blank>click me</a></div>`
+            <a href=https://url-backend-aenc.onrender.com/activate/${user._id}/${token} target=_blank>click me</a></div>`
         }
         tranport.sendMail(mailoption, function (error, info) {
             if (error) {
@@ -180,7 +180,7 @@ router.post("/forgot", async(req, res)=>{
             subject: "RESET PASSWORD",
             html: `<div><p><b>Hi</b> <b>${isExist.firstname},</b></p>
             <h3>We have sent a account activation link. please click on below link to activate your account. This link will be expired after 5 minutes.</h3>
-            <a href=http://localhost:3000/password-reset/${isExist._id}/${token} target=_blank>click me</a></div>`
+            <a href=https://url-backend-aenc.onrender.com/password-reset/${isExist._id}/${token} target=_blank>click me</a></div>`
         }
         tranport.sendMail(mailoption, function (error, info) {
             if (error) {
