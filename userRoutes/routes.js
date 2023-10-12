@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 dotenv.config();
-import { activateUser, addUser, checkUser, findUserById, updateNewPassword } from "../dbControllers/dbControl.js";
+import { activateUser, addUser, checkToken, checkUser, findUserById, updateNewPassword, updatetokenToDb } from "../dbControllers/dbControl.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
@@ -49,7 +49,7 @@ router.post("/signup", async (req, res) => {
             subject: "Account activation link",
             html: `<div><p><b>Hi</b> <b>${userData.firstname},</b></p>
             <h3>We have sent a account activation link. please click on below link to activate your account. This link will be expired after 24 hours.</h3>
-            <a href=https://url-backend-aenc.onrender.com/activate/${getUserId._id}/${token} target=_blank>click me</a></div>`
+            <a href=https://master--legendary-mandazi-a23d41.netlify.app/activate/${getUserId._id}/${token} target=_blank>click me</a></div>`
         }
         tranport.sendMail(mailoption, function (error, info) {
             if (error) {
@@ -115,7 +115,7 @@ router.get("/resend/:id", async (req, res) => {
             subject: "Account activation link",
             html: `<div><p><b>Hi</b> <b>${user.firstname},</b></p>
             <h3>We have sent a account activation link. please click on below link to activate your account. This link will be expired after 24 hours.</h3>
-            <a href=https://url-backend-aenc.onrender.com/activate/${user._id}/${token} target=_blank>click me</a></div>`
+            <a href=https://master--legendary-mandazi-a23d41.netlify.app/activate/${user._id}/${token} target=_blank>click me</a></div>`
         }
         tranport.sendMail(mailoption, function (error, info) {
             if (error) {
@@ -167,6 +167,8 @@ router.post("/forgot", async(req, res)=>{
             return res.status(400).json({ status: 400, msg: "not exist", resp: false })
         }
         let token = jwt.sign({ id: isExist._id }, process.env.key, { expiresIn: "300s" });
+        let updateToken = await updatetokenToDb(token, isExist.email);
+        if(updateToken){
         let tranport = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -180,7 +182,7 @@ router.post("/forgot", async(req, res)=>{
             subject: "RESET PASSWORD",
             html: `<div><p><b>Hi</b> <b>${isExist.firstname},</b></p>
             <h3>We have sent a account activation link. please click on below link to activate your account. This link will be expired after 5 minutes.</h3>
-            <a href=https://url-backend-aenc.onrender.com/password-reset/${isExist._id}/${token} target=_blank>click me</a></div>`
+            <a href=https://master--legendary-mandazi-a23d41.netlify.app/password-reset/${isExist._id}/${token} target=_blank>click me</a></div>`
         }
         tranport.sendMail(mailoption, function (error, info) {
             if (error) {
@@ -189,6 +191,7 @@ router.post("/forgot", async(req, res)=>{
                 return res.status(201).json({ status: 201, msg: "your signup was success. we have sent accoutn activation link to your email", resp: true })
             }
         });
+    }
 
 
 
@@ -200,6 +203,8 @@ router.post("/forgot", async(req, res)=>{
 router.get("/reset/:id/:token", async(req, res)=>{
     let {id, token} = req.params;
     let finalResult = false;
+    let checkTokenAndRemove = await checkToken(id, token);
+    if(checkTokenAndRemove){
     let status = "";
     let verifyToken = jwt.verify(token, process.env.key, (err, decode)=>{
         if(err){
@@ -213,6 +218,7 @@ router.get("/reset/:id/:token", async(req, res)=>{
             return res.status(200).json({status:200, msg:"verified", resp:true})
         }
     })
+}
 })
 
 router.post("/update/:id/:token", async(req, res)=>{
