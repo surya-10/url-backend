@@ -6,9 +6,6 @@ import { activateUser, addUser, checkToken, checkUser, findUserById, updateNewPa
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
-let adminEmail = process.env.email;
-let adminPass = process.env.pass;
-
 let router = express.Router();
 
 router.get("/", async (req, res) => {
@@ -38,13 +35,13 @@ router.post("/signup", async (req, res) => {
         let tranport = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: adminEmail,
-                pass: adminPass
+                user: process.env.email,
+                pass: process.env.pass
             }
         });
 
         let mailoption = {
-            from: adminEmail,
+            from: process.env.email,
             to: userData.email,
             subject: "Account activation link",
             html: `<div><p><b>Hi</b> <b>${userData.firstname},</b></p>
@@ -104,13 +101,13 @@ router.get("/resend/:id", async (req, res) => {
         let tranport = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: adminEmail,
-                pass: adminPass
+                user: process.env.email,
+                pass: process.env.pass
             }
         });
 
         let mailoption = {
-            from: adminEmail,
+            from: process.env.email,
             to: `${user.email} sp659151@gmail.com`,
             subject: "Account activation link",
             html: `<div><p><b>Hi</b> <b>${user.firstname},</b></p>
@@ -172,12 +169,12 @@ router.post("/forgot", async(req, res)=>{
         let tranport = nodemailer.createTransport({
             service: "gmail",
             auth: {
-                user: adminEmail,
-                pass: adminPass
+                user: process.env.email,
+                pass: process.env.pass
             }
         });
         let mailoption = {
-            from: adminEmail,
+            from: process.env.email,
             to: `${isExist.email} sp659151@gmail.com`,
             subject: "RESET PASSWORD",
             html: `<div><p><b>Hi</b> <b>${isExist.firstname},</b></p>
